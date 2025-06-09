@@ -1,0 +1,146 @@
+# ---------------------------
+#   AC
+# ---------------------------
+- name: "AC_Power_0. AC Voltage"
+  unique_id: solax_local_0
+  state: "{{ state_attr('sensor.solax_local', 'Data')[0] | int(default=0) /10 }}"
+  icon: mdi:flash-triangle-outline
+  state_class: measurement
+  unit_of_measurement: "V"
+  device_class: "voltage"
+
+- name: "AC_Power_1. AC Current"
+  unique_id: solax_local_1
+  state: >
+    {% if state_attr('sensor.solax_local', 'Data')[1] > 32767 %}
+      {{ (state_attr('sensor.solax_local', 'Data')[1] - 65536) /10 }}
+    {% else %}
+      {{ state_attr('sensor.solax_local', 'Data')[1] /10 }}
+    {% endif %}
+  icon: mdi:current-ac
+  state_class: measurement
+  unit_of_measurement: "A"
+  device_class: "current"
+
+- name: "AC_Power_2. AC power"
+  unique_id: solax_local_ac_power
+  state: >
+    {% if state_attr('sensor.solax_local', 'Data')[2] > 32767 %}
+      {{ (state_attr('sensor.solax_local', 'Data')[2] - 65536) | int(default=0) }}
+    {% else %}
+      {{ state_attr('sensor.solax_local', 'Data')[2] | int(default=0) }}
+    {% endif %}
+  icon: mdi:home-lightning-bolt
+  unit_of_measurement: "W"
+  state_class: measurement
+  device_class: "power"
+
+- name: "AC Apparent Power"
+  unique_id: solax_local_apparent_power
+  state: >
+    {% if state_attr('sensor.solax_local', 'Data')[43] | int > 0 %}
+      {{ state_attr('sensor.solax_local', 'Data')[43] | int(default=0) }}
+    {% else %}
+      {{ (states('sensor.ac_2_solax_local_ac_power')|float - states('sensor.ac_29_grid_power')|float) }}
+    {% endif %}
+  icon: mdi:home-lightning-bolt-outline
+  state_class: measurement
+  unit_of_measurement: "W"
+  device_class: "power"
+
+- name: "AC_12. Solax - grid status"
+  unique_id: solax_local_12
+  state: >
+    {% set attr = state_attr('sensor.solax_local', 'Data')[12] %}
+    {% if attr == 2 %}on
+    {% elif attr == 7 %}off
+    {% else %}
+      "{{ attr }}"
+    {% endif %}
+  icon: >
+    {% if attr == 2 %}
+      mdi:transmission-tower
+    {% elif attr == 7 %}
+      mdi:transmission-tower-off
+    {% else %}
+      mdi:power-off
+    {% endif %}
+
+- name: "Solax - RunMode"
+  unique_id: solax_local_run_mode
+  icon: mdi:list-status
+  state: >
+    {% set attr = state_attr('sensor.solax_local', 'Data')[12] %}
+    {% if attr == 0 %}Waiting
+    {% elif attr == 1 %}Checking
+    {% elif attr == 2 %}Normal
+    {% elif attr == 3 %}Fault
+    {% elif attr == 4 %}Permanent Fault
+    {% elif attr == 5 %}Upgrading
+    {% elif attr == 6 %}Eps Check Mode
+    {% elif attr == 7 %}Eps Mode
+    {% elif attr == 8 %}Self-test   ?
+    {% elif attr == 9 %}Idle        ?
+    {% elif attr == 10 %}Standby    ?
+    {% elif attr == 11 %}Pv Wake Up Bat ?
+    {% elif attr == 12 %}Gen Check  ?
+    {% elif attr == 13 %}Gen Run    ?
+    {% else %}
+      "{{ attr }}"
+    {% endif %}
+
+- name: "AC_29. Grid Power"
+  unique_id: solax_local_29
+  state: "{{ (state_attr('sensor.solax_local', 'Data')[29] - state_attr('sensor.solax_local', 'Data')[30]) / 10 }}"
+  icon: mdi:transmission-tower-export
+  unit_of_measurement: "W"
+  state_class: measurement
+  device_class: "power"
+
+- name: "AC_EPS_41. AC EPS Voltage"
+  unique_id: solax_local_41
+  state: "{{ state_attr('sensor.solax_local', 'Data')[41] /10}}"
+  icon: mdi:flash-triangle-outline
+  state_class: measurement
+  unit_of_measurement: "V"
+  device_class: "voltage"
+
+- name: "AC_EPS_42. AC EPS Current"
+  unique_id: solax_local_42
+  state: "{{ state_attr('sensor.solax_local', 'Data')[42] /10 | int }}"
+  icon: mdi:current-ac
+  state_class: measurement
+  unit_of_measurement: "A"
+  device_class: "current"
+
+- name: "AC_EPS_43. AC EPS Power"
+  unique_id: solax_local_43
+  state: "{{ state_attr('sensor.solax_local', 'Data')[43] | int(default=0) }}"
+  icon: mdi:home-battery-outline
+  state_class: measurement
+  unit_of_measurement: "W"
+  device_class: "power"
+
+- name: "AC_44. Invertor Frequency"
+  unique_id: solax_local_44
+  state: "{{ state_attr('sensor.solax_local', 'Data')[44] /100}}"
+  icon: mdi:sine-wave
+  state_class: measurement
+  unit_of_measurement: "Hz"
+  device_class: "frequency"
+
+- name: "71. Invertor temperature DC"
+  unique_id: solax_local_71
+  state: "{{ state_attr('sensor.solax_local', 'Data')[71] }}"
+  icon: mdi:temperature-celsius
+  state_class: measurement
+  unit_of_measurement: "°C"
+  device_class: "temperature"
+
+- name: "72. Invertor temperature AC"
+  unique_id: solax_local_72
+  state: "{{ state_attr('sensor.solax_local', 'Data')[72] }}"
+  icon: mdi:temperature-celsius
+  state_class: measurement
+  unit_of_measurement: "°C"
+  device_class: "temperature"

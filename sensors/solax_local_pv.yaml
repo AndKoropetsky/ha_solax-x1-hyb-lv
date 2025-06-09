@@ -1,0 +1,59 @@
+# ---------------------------
+#   PV
+# ---------------------------
+- name: "PV_5. PV1 Voltage"
+  unique_id: solax_local_5
+  state: "{{ state_attr('sensor.solax_local', 'Data')[5] /10}}"
+  icon: mdi:flash-triangle
+  state_class: measurement
+  unit_of_measurement: "V"
+  device_class: "voltage"
+
+- name: "PV_6. PV1 current"
+  unique_id: solax_local_6
+  state: "{{ state_attr('sensor.solax_local', 'Data')[6] /10}}"
+  icon: mdi:current-dc
+  state_class: measurement
+  unit_of_measurement: "A"
+  device_class: "current"
+
+- name: "PV_7. PV2 Voltage"
+  unique_id: solax_local_7
+  state: "{{ state_attr('sensor.solax_local', 'Data')[7] /10}}"
+  icon: mdi:flash-triangle
+  state_class: measurement
+  unit_of_measurement: "V"
+  device_class: "voltage"
+
+- name: "PV_8. PV2 current"
+  unique_id: solax_local_8
+  state: "{{ state_attr('sensor.solax_local', 'Data')[8] /10}}"
+  icon: mdi:current-dc
+  state_class: measurement
+  unit_of_measurement: "A"
+  device_class: "current"
+
+- name: "PV_9. PV1 Power"
+  unique_id: solax_local_9
+  state: "{{ state_attr('sensor.solax_local', 'Data')[9] }}"
+  icon: mdi:solar-power-variant-outline
+  state_class: measurement
+  unit_of_measurement: "W"
+  device_class: "power"
+
+- name: "PV_10. PV2 Power"
+  unique_id: solax_local_10
+  state: "{{ state_attr('sensor.solax_local', 'Data')[10] }}"
+  icon: mdi:solar-power-variant-outline
+  state_class: measurement
+  unit_of_measurement: "W"
+  device_class: "power"
+
+#### Combined Solar PV output ####
+- name: "PV_11. PV Total power"
+  unique_id: solax_local_pv_total_power
+  state: "{{ state_attr('sensor.solax_local', 'Data')[11] }}"
+  icon: mdi:solar-power-variant-outline
+  state_class: measurement
+  unit_of_measurement: "W"
+  device_class: "power"

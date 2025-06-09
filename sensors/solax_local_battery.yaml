@@ -1,0 +1,139 @@
+# ---------------------------
+#   Battery
+# ---------------------------
+- name: "Battery_16. Total battery charging from grid"
+  unique_id: solax_local_16
+  state: "{{ state_attr('sensor.solax_local', 'Data')[16] /10}}"
+  icon: mdi:battery-charging-100
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Battery_19. Daily battery charging from grid"
+  unique_id: solax_local_19
+  state: "{{ state_attr('sensor.solax_local', 'Data')[19] /10}}"
+  icon: mdi:battery-charging-20
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Battery_20. Voltage"
+  unique_id: solax_local_battery_voltage
+  state: "{{ state_attr('sensor.solax_local', 'Data')[20] | float / 10}}"
+  icon: mdi:flash-triangle-outline
+  state_class: measurement
+  unit_of_measurement: "V"
+  device_class: "voltage"
+
+- name: "Battery_21. Current"
+  unique_id: solax_local_21
+  state: >
+    {% if state_attr('sensor.solax_local', 'Data')[21] > 32767 %}
+      {{ (state_attr('sensor.solax_local', 'Data')[21] - 65536) /10 }}
+    {% else %}
+      {{ state_attr('sensor.solax_local', 'Data')[21] /10 }}
+    {% endif %}
+  icon: mdi:current-dc
+  state_class: measurement
+  unit_of_measurement: "A"
+  device_class: "current"
+
+### Battery charging/discharging power (positive for charging the battery) ###
+- name: "Battery_22. Power (Battery Adjusted)"
+  unique_id: solax_local_battery_power
+  state: >
+    {% if state_attr('sensor.solax_local', 'Data')[22] > 32767 %}
+      {{ (state_attr('sensor.solax_local', 'Data')[22] - 65536) }}
+    {% else %}
+      {{ state_attr('sensor.solax_local', 'Data')[22] }}
+    {% endif %}
+  icon: mdi:generator-stationary
+  state_class: measurement
+  unit_of_measurement: "W"
+  device_class: "power"
+
+- name: "Battery_23. Charged total"
+  unique_id: solax_local_23
+  state: "{{ state_attr('sensor.solax_local', 'Data')[23] | float /10 }}"
+  icon: mdi:battery-plus-outline
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Battery_25. Discharged total"
+  unique_id: solax_local_25
+  state: "{{ state_attr('sensor.solax_local', 'Data')[25] /10 }}"
+  icon: mdi:battery-minus-outline
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Battery_27. Charged today"
+  unique_id: solax_local_27
+  state: "{{ state_attr('sensor.solax_local', 'Data')[27] | float /10 }}"
+  icon: mdi:battery-plus-outline
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Battery_28. Discharged today"
+  unique_id: solax_local_28
+  state: "{{ state_attr('sensor.solax_local', 'Data')[28] /10 }}"
+  icon: mdi:battery-minus-outline
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Battery_59. Temperature"
+  unique_id: solax_local_battery_temp
+  icon: mdi:temperature-celsius
+  state: "{{ state_attr('sensor.solax_local', 'Data')[59] | int(default=0) }}"
+  state_class: measurement
+  unit_of_measurement: "°C"
+  device_class: "temperature"
+
+### Battery charge level (%)
+- name: "Battery_68. SoC"
+  unique_id: solax_local_battery_soc
+  state: "{{ state_attr('sensor.solax_local', 'Data')[68] | float / 10}}"
+  icon: >
+    {% set b_soc = state_attr('sensor.solax_local', 'Data')[68] / 10 %}
+    {% if b_soc > 95 %}mdi:battery
+    {% elif b_soc > 89 %}mdi:battery-90
+    {% elif b_soc > 79 %}mdi:battery-80
+    {% elif b_soc > 69 %}mdi:battery-70
+    {% elif b_soc > 59 %}mdi:battery-60
+    {% elif b_soc > 49 %}mdi:battery-50
+    {% elif b_soc > 39 %}mdi:battery-40
+    {% elif b_soc > 29 %}mdi:battery-30
+    {% elif b_soc > 19 %}mdi:battery-20
+    {% elif b_soc > 9 %}mdi:battery-10
+    {% else %}mdi:battery-0{% endif %}
+  state_class: measurement
+  unit_of_measurement: "%"
+  device_class: "battery"
+
+### Estimated remaining energy ###
+- name: "Battery_98. Remain Energy"
+  unique_id: solax_local_98
+  state: "{{ state_attr('sensor.solax_local', 'Data')[98] /10 }}"
+  icon: mdi:battery-heart
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "BMU_73. Battery Maximum Voltage"
+  unique_id: solax_local_73
+  state: "{{ state_attr('sensor.solax_local', 'Data')[73] /1000 }}"
+  icon: mdi:flash-triangle-outline
+  state_class: measurement
+  unit_of_measurement: "V"
+  device_class: "voltage"
+
+- name: "BMU_74. Battery Minimum Voltage"
+  unique_id: solax_local_74
+  state: "{{ state_attr('sensor.solax_local', 'Data')[74] /1000 }}"
+  icon: mdi:flash-triangle-outline
+  state_class: measurement
+  unit_of_measurement: "V"
+  device_class: "voltage"

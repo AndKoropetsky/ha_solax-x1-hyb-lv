@@ -1,0 +1,103 @@
+# ---------------------------
+#   Total
+# ---------------------------
+- name: "Total_37. Imported energy today"
+  unique_id: solax_local_37
+  state: "{{ state_attr('sensor.solax_local', 'Data')[37] /10 }}"
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Total_51. Daily PV Yield"
+  unique_id: solax_local_51
+  state: "{{ state_attr('sensor.solax_local', 'Data')[51] /10 }}"
+  # icon: mdi:solar-power-variant
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: energy
+
+- name: "Total_52. Total PV Yield"
+  unique_id: solax_local_total_pv_yield
+  state: "{{ state_attr('sensor.solax_local', 'Data')[52] /10 }}"
+  icon: mdi:solar-power-variant
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: energy
+
+- name: "Total_18. Daily yield"
+  unique_id: solax_local_18
+  state: "{{ state_attr('sensor.solax_local', 'Data')[18] /10 }}"
+  # icon: mdi:solar-power
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Total_14. Total inverter output"
+  unique_id: solax_local_14
+  state: "{{ state_attr('sensor.solax_local', 'Data')[14] /10 }}"
+  icon: mdi:export
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Total_33. Total Energy From Grid"
+  unique_id: solax_local_33
+  state: >
+    {% if state_attr('sensor.solax_local', 'Data')[33] > 32767 %}
+      {{ (state_attr('sensor.solax_local', 'Data')[33] - 65536) /10 }}
+    {% else %}
+      {{ state_attr('sensor.solax_local', 'Data')[33] /10 }}
+    {% endif %}
+  icon: mdi:transmission-tower
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Total_45. Daily EPS Yield"
+  unique_id: solax_local_45
+  state: "{{ state_attr('sensor.solax_local', 'Data')[45] /10 }}"
+  icon: mdi:solar-power
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+- name: "Total_46. Total EPS Yield"
+  unique_id: solax_local_46
+  state: "{{ state_attr('sensor.solax_local', 'Data')[46] /10 }}"
+  icon: mdi:solar-power
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+# Total power used for residential use on the day comes from the inverter AC output, the grid, and third-party generators
+- name: "Total 18+37. Daily consumed"
+  unique_id: solax_local_daily_consumed
+  state: "{{ (state_attr('sensor.solax_local', 'Data')[18] + state_attr('sensor.solax_local', 'Data')[37]) / 10}}"
+  state_class: total_increasing
+  unit_of_measurement: "kWh"
+  device_class: "energy"
+
+# ---------------------------
+#   Overview
+# ---------------------------
+- name: "Others --- 4. Total power factor"
+  unique_id: solax_local_4
+  state: "{{ state_attr('sensor.solax_local', 'Data')[4] / 1000 }}"
+  icon: mdi:generator-portable
+  unit_of_measurement: "Wh"
+  device_class: "energy"
+
+- name: "Others --- 3. Grid frequency"
+  unique_id: solax_local_3
+  state: "{{ state_attr('sensor.solax_local', 'Data')[3] / 100 | float }}"
+  icon: mdi:sine-wave
+  state_class: measurement
+  unit_of_measurement: "Hz"
+  device_class: "frequency"
+
+- name: "Others --- 31. Rated power"
+  unique_id: solax_local_31
+  state: "{{ state_attr('sensor.solax_local', 'Data')[31] }}"
+  icon: mdi:transmission-tower
+  state_class: measurement
+  unit_of_measurement: "kW"
+  device_class: "energy"

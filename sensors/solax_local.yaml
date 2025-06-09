@@ -1,0 +1,83 @@
+### Local sensor readings ###
+- name: solax_local
+  state: >
+    {% if state_attr('sensor.solax_rest_local', 'sn')|length == 10  %}
+      {{ now().strftime("%H:%M:%S") }}
+    {% else %}
+      {{ (states('sensor.solax_local')) }}
+    {% endif %}
+  attributes:
+    sn: >-
+      {% if state_attr('sensor.solax_rest_local', 'sn')|length == 10 %}
+        {{ (state_attr('sensor.solax_rest_local', 'sn')) }}
+      {% else %}
+        {{ (state_attr('sensor.solax_local', 'sn')) }}
+      {% endif %}
+    ver: >-
+      {% if state_attr('sensor.solax_rest_local', 'sn')|length == 10 %}
+        {{ (state_attr('sensor.solax_rest_local', 'ver')) }}
+      {% else %}
+        {{ (state_attr('sensor.solax_local', 'ver')) }}
+      {% endif %}
+    type: >-
+      {% if state_attr('sensor.solax_rest_local', 'sn')|length == 10 %}
+        {{ (state_attr('sensor.solax_rest_local', 'type')) }}
+      {% else %}
+        {{ (state_attr('sensor.solax_local', 'type')) }}
+      {% endif %}
+    Data: >-
+      {% if state_attr('sensor.solax_rest_local', 'sn')|length == 10 %}
+        {{ (state_attr('sensor.solax_rest_local', 'Data')) }}
+      {% else %}
+        {{ (state_attr('sensor.solax_local', 'Data')) }}
+      {% endif %}
+    Information: >-
+      {% if state_attr('sensor.solax_rest_local', 'sn')|length == 10 %}
+        {{ (state_attr('sensor.solax_rest_local', 'Information')) }}
+      {% else %}
+        {{ (state_attr('sensor.solax_local', 'Information')) }}
+      {% endif %}
+
+- name: "Solax Local Type"
+  unique_id: solax_local_type
+  state: >
+    {% set attr = state_attr('sensor.solax_rest_local', 'type') %}
+    {% if attr == 3 %}X1 hybrid g3
+    {% elif attr == 4 %}X1 boost air mini
+    {% elif attr == 5 %}X3 hybrid g1
+    {% elif attr == 6 %}X3 20k 30k
+    {% elif attr == 7 %}X3 mic
+    {% elif attr == 8 %}X1 boost pro
+    {% elif attr == 9 %}X1 ac
+    {% elif attr == 10 %}A1 hybrid
+    {% elif attr == 11 %}A1 hybrid
+    {% elif attr == 12 %}A1 hybrid
+    {% elif attr == 13 %}J1 ess
+    {% elif attr == 14 %}X3 hybrid g4
+    {% elif attr == 15 %}X1 hybrid g4
+    {% elif attr == 16 %}X3 micpro g2
+    {% elif attr == 17 %}X1 hybridsplit g4
+    {% elif attr == 18 %}X1 boostmini g4
+    {% elif attr == 22 %}X1 boostmini g4
+    {% elif attr == 19 %}A1 hybrid g2
+    {% elif attr == 20 %}A1 hybrid g2
+    {% elif attr == 21 %}A1 hybrid g2
+    {% elif attr == 23 %}X1 hybrid g5
+    {% elif attr == 24 %}X3 hybrid g5
+    {% elif attr == 100 %}X3 big
+    {% elif attr == 101 %}X3 big
+    {% elif attr == 102 %}X1-Hybrid-LV
+    {% else %}unknown{% endif %}
+
+- name: "SolaX local Date & Time (48. 49. 50.)"
+  unique_id: solax_local_48
+  icon: mdi:calendar
+  state: >
+    {% set year = (state_attr('sensor.solax_local', 'Data')[48] /256) |round(0) %}
+    {% set month = (state_attr('sensor.solax_local', 'Data')[48] %256) |round(0) %}
+    {% set day = (state_attr('sensor.solax_local', 'Data')[49] /256) |round(0) %}
+    {% set hour = (state_attr('sensor.solax_local', 'Data')[49] %256) |round(0) %}
+    {% set min = (state_attr('sensor.solax_local', 'Data')[50] /256) |round(0) %}
+    {% set sec = (state_attr('sensor.solax_local', 'Data')[50] %256) |round(0) %}
+    {% set today = '20' ~ year ~ '-' ~ month ~ '-' ~ day ~ ' ' ~ hour ~ ':' ~ min ~ ':' ~ sec %}
+    {{ as_timestamp(today)|timestamp_custom('%Y-%m-%d %H:%M:%S') }}
